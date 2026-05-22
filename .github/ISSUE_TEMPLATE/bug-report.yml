@@ -1,0 +1,78 @@
+name: Bug Report
+description: File a bug report
+title: "[BUG]: "
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description:
+        Describe the bug clearly. What did you see, and what did you expect to
+        see instead?
+      placeholder: When I render <ParticleCanvas> with ..., the particles do X.
+        I expected them to do Y.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps someone else can follow to see the same
+        bug.
+      placeholder: |
+        1. Install @weburz/particle-canvas
+        2. Add <ParticleCanvas :config="{ ... }" /> to a page
+        3. Open the page in <browser>
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: input
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description:
+        A link to a minimal repro is the single most helpful thing you can
+        provide. Use StackBlitz, CodeSandbox, or a small public GitHub repo.
+      placeholder: https://stackblitz.com/edit/...
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Versions of the relevant tools and the platform you saw the
+        bug on.
+      value: |
+        - `@weburz/particle-canvas` version:
+        - Nuxt version:
+        - Node.js version:
+        - Package manager (pnpm / npm / yarn / bun) + version:
+        - OS:
+        - Browser + version:
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Console errors, build output, anything related. No need for
+        backticks — this auto-formats as a shell block.
+      render: Shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / video
+      description: For visual bugs, a screenshot or short screen recording is
+        worth far more than a description. Drag and drop into the box.
