@@ -1,0 +1,82 @@
+{
+  "name": "@weburz/particle-canvas",
+  "version": "0.1.0",
+  "description": "Zero-dependency animated particle canvas for Nuxt 4. Drop-in <ParticleCanvas /> component with TypeScript-first config.",
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "particle-canvas",
+    "particles",
+    "canvas",
+    "animation",
+    "typescript",
+    "zero-dependency",
+    "vue"
+  ],
+  "license": "MIT",
+  "author": "Weburz",
+  "homepage": "https://github.com/Weburz/particle-canvas#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Weburz/particle-canvas.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Weburz/particle-canvas/issues"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "dev": "npm run dev:prepare && nuxt dev playground",
+    "dev:build": "nuxt build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "setup:hooks": "pre-commit install && pre-commit install --hook-type commit-msg"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.4.5"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^3.2.4",
+    "@nuxt/eslint-config": "^1.15.2",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.4.5",
+    "@nuxt/test-utils": "^4.0.3",
+    "@types/node": "latest",
+    "changelogen": "^0.6.2",
+    "eslint": "^10.3.0",
+    "happy-dom": "^15.11.7",
+    "nuxt": "^4.4.5",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.5",
+    "vue-tsc": "^3.2.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
