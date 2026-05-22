@@ -148,6 +148,17 @@ Both are typed via the exported `ParticleConfig`, `Particle`, and `RGB` types.
 
 </details>
 
+## Prior art
+
+The `<ParticleCanvas>` API surface — particularly the effect names (`grab`,
+`repulse`, `bubble`, `push`) and the linked-constellation rendering — draws on
+[particles.js][particles-js] by Vincent Garreau and its modern successor
+[tsParticles][tsparticles] by Matteo Bruni. This module is a smaller,
+Nuxt-native take focused on a single preset, with no runtime dependencies.
+
+[particles-js]: https://github.com/VincentGarreau/particles.js
+[tsparticles]: https://github.com/tsparticles/tsparticles
+
 ## License
 
 MIT &copy; [Weburz](https://github.com/Weburz)
