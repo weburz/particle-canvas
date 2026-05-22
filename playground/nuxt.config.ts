@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-  modules: ['../src/module'],
+  modules: ['@weburz/particle-canvas'],
 
   devtools: { enabled: true },
   compatibilityDate: 'latest',
