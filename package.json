@@ -1,6 +1,6 @@
 {
   "name": "@weburz/particle-canvas",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Zero-dependency animated particle canvas for Nuxt 4. Drop-in <ParticleCanvas /> component with TypeScript-first config.",
   "keywords": [
     "nuxt",
