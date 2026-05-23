@@ -28,9 +28,22 @@ pnpm add @weburz/particle-canvas
 // nuxt.config.ts
 export default defineNuxtConfig({
   modules: ['@weburz/particle-canvas'],
+})
+```
+
+That's it — `<ParticleCanvas />` now auto-imports and works with sensible
+built-in defaults (see [`ParticleConfig`](#particleconfig) below). Add a
+`particleCanvas` block only if you want app-wide overrides:
+
+```ts
+// nuxt.config.ts — optional
+export default defineNuxtConfig({
+  modules: ['@weburz/particle-canvas'],
 
   particleCanvas: {
-    // optional defaults applied to every <ParticleCanvas> with no `config` prop
+    // Applied to every <ParticleCanvas> that doesn't pass a `config` prop.
+    // A per-component `:config` deep-merges over these for group fields
+    // (linked, interaction, density).
     defaults: {
       count: 100,
       color: ['#a3c4e0', '#ffd86b'],
@@ -75,7 +88,10 @@ and client, so there's no hydration mismatch.
 
 ## `ParticleConfig`
 
-All fields are optional and merged shallowly over the defaults below.
+All fields are optional. Group fields (`linked`, `interaction.hover`,
+`interaction.click`, `density`) merge field-by-field over the defaults below,
+so you can override just the field you care about. Range pairs (`size`,
+`opacity`, `speed`) are replaced atomically — pass both `min` and `max`.
 
 | Field               | Default                   | Description                                                |
 | ------------------- | ------------------------- | ---------------------------------------------------------- |

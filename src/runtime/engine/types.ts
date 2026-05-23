@@ -13,30 +13,30 @@ export type ParticleConfig = {
   outMode?: 'out' | 'bounce'
 
   linked?: {
-    enable: boolean
-    distance: number
-    color: string
-    width: number
-    opacity: number
+    enable?: boolean
+    distance?: number
+    color?: string
+    width?: number
+    opacity?: number
   }
 
   interaction?: {
-    hover: {
-      enable: boolean
-      mode: 'grab' | 'repulse' | 'bubble'
-      distance: number
+    hover?: {
+      enable?: boolean
+      mode?: 'grab' | 'repulse' | 'bubble'
+      distance?: number
     }
 
-    click: {
-      enable: boolean
-      mode: 'push' | 'repulse'
-      count: number
+    click?: {
+      enable?: boolean
+      mode?: 'push' | 'repulse'
+      count?: number
     }
   }
 
   density?: {
-    enable: boolean
-    area: number
+    enable?: boolean
+    area?: number
   }
 }
 

@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - `<ParticleCanvas />` component, auto-imported in Nuxt 4 apps.
 - `useParticleSystem` composable, auto-imported alongside the component.
 - Module options `defaults` (global `ParticleConfig`) and `prefix` (component name prefix).
+  Per-component `:config` deep-merges over `defaults` for group fields (`linked`,
+  `interaction.hover`, `interaction.click`, `density`); range pairs (`size`,
+  `opacity`, `speed`) replace atomically.
 - Zero-dependency particle engine with linked-line constellations, hover modes
   (`grab`, `repulse`, `bubble`), click modes (`push`, `repulse`), and density-aware
   particle scaling.

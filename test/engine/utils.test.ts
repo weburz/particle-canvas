@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { DIRECTIONS, hexToRgb, rand } from '../../src/runtime/engine/utils'
+import {
+  DIRECTIONS,
+  hexToRgb,
+  mergeConfig,
+  rand,
+} from '../../src/runtime/engine/utils'
 
 describe('hexToRgb', () => {
   it('parses 6-digit hex', () => {
@@ -54,5 +59,70 @@ describe('DIRECTIONS', () => {
     expect(DIRECTIONS.bottom).toEqual({ x: 0, y: 1 })
     expect(DIRECTIONS.left).toEqual({ x: -1, y: 0 })
     expect(DIRECTIONS.right).toEqual({ x: 1, y: 0 })
+  })
+})
+
+describe('mergeConfig', () => {
+  it('returns base values when override is empty', () => {
+    const merged = mergeConfig({ count: 50, color: '#abc' }, {})
+    expect(merged.count).toBe(50)
+    expect(merged.color).toBe('#abc')
+  })
+
+  it('top-level scalars in override win', () => {
+    const merged = mergeConfig({ count: 50 }, { count: 200 })
+    expect(merged.count).toBe(200)
+  })
+
+  it('deep-merges linked so partial overrides keep base fields', () => {
+    const merged = mergeConfig(
+      { linked: { enable: true, distance: 200, color: '#000', width: 2, opacity: 0.5 } },
+      { linked: { color: '#f00' } },
+    )
+    expect(merged.linked).toEqual({
+      enable: true,
+      distance: 200,
+      color: '#f00',
+      width: 2,
+      opacity: 0.5,
+    })
+  })
+
+  it('deep-merges interaction.hover and click independently', () => {
+    const merged = mergeConfig(
+      {
+        interaction: {
+          hover: { enable: true, mode: 'repulse', distance: 100 },
+          click: { enable: true, mode: 'push', count: 3 },
+        },
+      },
+      { interaction: { hover: { mode: 'grab' } } },
+    )
+    expect(merged.interaction?.hover).toEqual({
+      enable: true,
+      mode: 'grab',
+      distance: 100,
+    })
+    expect(merged.interaction?.click).toEqual({
+      enable: true,
+      mode: 'push',
+      count: 3,
+    })
+  })
+
+  it('replaces size atomically (min/max are a coupled pair)', () => {
+    const merged = mergeConfig(
+      { size: { min: 1, max: 3 } },
+      { size: { min: 4, max: 8 } },
+    )
+    expect(merged.size).toEqual({ min: 4, max: 8 })
+  })
+
+  it('does not mutate base or override', () => {
+    const base = { linked: { distance: 100 } }
+    const over = { linked: { color: '#f00' } }
+    mergeConfig(base, over)
+    expect(base).toEqual({ linked: { distance: 100 } })
+    expect(over).toEqual({ linked: { color: '#f00' } })
   })
 })

@@ -1,10 +1,40 @@
 import type { Particle, ParticleConfig, RGB } from './types'
 import { DIRECTIONS, hexToRgb, rand } from './utils'
 
+type ResolvedConfig = {
+  count: number
+  color: string | string[]
+  size: { min: number, max: number }
+  opacity: { min: number, max: number }
+  speed: { min: number, max: number }
+  direction: NonNullable<ParticleConfig['direction']>
+  outMode: NonNullable<ParticleConfig['outMode']>
+  linked: {
+    enable: boolean
+    distance: number
+    color: string
+    width: number
+    opacity: number
+  }
+  interaction: {
+    hover: {
+      enable: boolean
+      mode: 'grab' | 'repulse' | 'bubble'
+      distance: number
+    }
+    click: {
+      enable: boolean
+      mode: 'push' | 'repulse'
+      count: number
+    }
+  }
+  density: { enable: boolean, area: number }
+}
+
 export class ParticleSystem {
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
-  private cfg: Required<ParticleConfig>
+  private cfg: ResolvedConfig
   private particles: Particle[] = []
   private animId: number | null = null
   private w = 0
@@ -33,7 +63,7 @@ export class ParticleSystem {
     this._resize = this.onResize.bind(this)
   }
 
-  private buildCfg(u: ParticleConfig): Required<ParticleConfig> {
+  private buildCfg(u: ParticleConfig): ResolvedConfig {
     return {
       count: u.count ?? 100,
       color: u.color ?? '#FFF',

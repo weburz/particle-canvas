@@ -1,4 +1,4 @@
-import type { RGB } from './types'
+import type { ParticleConfig, RGB } from './types'
 
 export const hexToRgb = (hex: string): RGB => {
   let h = hex.replace(/^#/, '')
@@ -23,3 +23,17 @@ export const DIRECTIONS: Record<string, { x: number, y: number }> = {
   left: { x: -1, y: 0 },
   right: { x: 1, y: 0 },
 }
+
+export const mergeConfig = (
+  base: ParticleConfig,
+  over: ParticleConfig,
+): ParticleConfig => ({
+  ...base,
+  ...over,
+  linked: { ...base.linked, ...over.linked },
+  interaction: {
+    hover: { ...base.interaction?.hover, ...over.interaction?.hover },
+    click: { ...base.interaction?.click, ...over.interaction?.click },
+  },
+  density: { ...base.density, ...over.density },
+})
