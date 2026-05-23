@@ -16,8 +16,7 @@ const props = defineProps<{
   config?: ParticleConfig
 }>()
 
-const runtimeDefaults
-  = (useRuntimeConfig().public.particleCanvas?.defaults as ParticleConfig) ?? {}
+const runtimeDefaults = useRuntimeConfig().public.particleCanvas?.defaults ?? {}
 const merged = mergeConfig(runtimeDefaults, props.config ?? {})
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)

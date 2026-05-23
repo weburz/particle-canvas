@@ -39,13 +39,9 @@ export class ParticleSystem {
   private animId: number | null = null
   private w = 0
   private h = 0
-  private mouse = { x: -9999, y: -9999 }
-  private linkRGB!: RGB
-
-  private _mousemove: (e: MouseEvent) => void
-  private _mouseleave: () => void
-  private _click: (e: MouseEvent) => void
-  private _resize: () => void
+  private mouse: { x: number, y: number } | null = null
+  private linkRGB: RGB
+  private resizeObserver: ResizeObserver | null = null
 
   constructor(canvas: HTMLCanvasElement, userCfg: ParticleConfig = {}) {
     const ctx = canvas.getContext('2d')
@@ -56,11 +52,6 @@ export class ParticleSystem {
     this.ctx = ctx
     this.cfg = this.buildCfg(userCfg)
     this.linkRGB = hexToRgb(this.cfg.linked.color)
-
-    this._mousemove = this.onMouseMove.bind(this)
-    this._mouseleave = this.onMouseLeave.bind(this)
-    this._click = this.onClick.bind(this)
-    this._resize = this.onResize.bind(this)
   }
 
   private buildCfg(u: ParticleConfig): ResolvedConfig {
@@ -110,26 +101,31 @@ export class ParticleSystem {
   }
 
   destroy(): void {
-    if (this.animId !== null) cancelAnimationFrame(this.animId)
+    if (this.animId !== null) {
+      cancelAnimationFrame(this.animId)
+      this.animId = null
+    }
     this.detachListeners()
     this.particles = []
   }
 
   private attachListeners() {
-    window.addEventListener('mousemove', this._mousemove)
-    window.addEventListener('mouseleave', this._mouseleave)
-    this.canvas.addEventListener('click', this._click)
-    window.addEventListener('resize', this._resize)
+    window.addEventListener('mousemove', this.onMouseMove)
+    window.addEventListener('mouseleave', this.onMouseLeave)
+    this.canvas.addEventListener('click', this.onClick)
+    this.resizeObserver = new ResizeObserver(this.onResize)
+    this.resizeObserver.observe(this.canvas)
   }
 
   private detachListeners() {
-    window.removeEventListener('mousemove', this._mousemove)
-    window.removeEventListener('mouseleave', this._mouseleave)
-    this.canvas.removeEventListener('click', this._click)
-    window.removeEventListener('resize', this._resize)
+    window.removeEventListener('mousemove', this.onMouseMove)
+    window.removeEventListener('mouseleave', this.onMouseLeave)
+    this.canvas.removeEventListener('click', this.onClick)
+    this.resizeObserver?.disconnect()
+    this.resizeObserver = null
   }
 
-  private onResize() {
+  private onResize = (): void => {
     const dpr = window.devicePixelRatio || 1
     this.w = this.canvas.offsetWidth
     this.h = this.canvas.offsetHeight
@@ -190,18 +186,22 @@ export class ParticleSystem {
     }
   }
 
-  private onMouseMove(e: MouseEvent) {
+  private onMouseMove = (e: MouseEvent): void => {
     const r = this.canvas.getBoundingClientRect()
-    this.mouse.x = e.clientX - r.left
-    this.mouse.y = e.clientY - r.top
+    const x = e.clientX - r.left
+    const y = e.clientY - r.top
+    if (x < 0 || y < 0 || x > r.width || y > r.height) {
+      this.mouse = null
+      return
+    }
+    this.mouse = { x, y }
   }
 
-  private onMouseLeave() {
-    this.mouse.x = -9999
-    this.mouse.y = -9999
+  private onMouseLeave = (): void => {
+    this.mouse = null
   }
 
-  private onClick(e: MouseEvent) {
+  private onClick = (e: MouseEvent): void => {
     const click = this.cfg.interaction.click
     if (!click.enable) return
 
@@ -210,7 +210,9 @@ export class ParticleSystem {
     const cy = e.clientY - r.top
 
     if (click.mode === 'push') {
+      const cap = this.targetCount() * 3
       for (let i = 0; i < click.count; i++) {
+        if (this.particles.length >= cap) break
         this.particles.push(this.makeParticle(cx, cy))
       }
     }
@@ -242,7 +244,7 @@ export class ParticleSystem {
   private update() {
     const hover = this.cfg.interaction.hover
 
-    if (hover.enable && hover.mode === 'repulse') {
+    if (hover.enable && hover.mode === 'repulse' && this.mouse) {
       this.applyRepulse(this.mouse.x, this.mouse.y, hover.distance, 2.5)
     }
 
@@ -316,14 +318,15 @@ export class ParticleSystem {
 
   private drawGrabLines() {
     const hover = this.cfg.interaction.hover
-    if (!hover.enable || hover.mode !== 'grab') return
+    if (!hover.enable || hover.mode !== 'grab' || !this.mouse) return
 
     const { r, g, b } = this.linkRGB
     const grabDistSq = hover.distance * hover.distance
+    const { x: mx, y: my } = this.mouse
 
     for (const p of this.particles) {
-      const dx = p.x - this.mouse.x
-      const dy = p.y - this.mouse.y
+      const dx = p.x - mx
+      const dy = p.y - my
       const dSq = dx * dx + dy * dy
 
       if (dSq < grabDistSq) {
@@ -332,7 +335,7 @@ export class ParticleSystem {
         this.ctx.lineWidth = 1.5
         this.ctx.beginPath()
         this.ctx.moveTo(p.x, p.y)
-        this.ctx.lineTo(this.mouse.x, this.mouse.y)
+        this.ctx.lineTo(mx, my)
         this.ctx.stroke()
       }
     }
@@ -340,16 +343,17 @@ export class ParticleSystem {
 
   private drawParticles() {
     const hover = this.cfg.interaction.hover
-    const bubble = hover?.enable && hover.mode === 'bubble'
+    const mouse = this.mouse
+    const bubble = hover.enable && hover.mode === 'bubble' && mouse !== null
     const bDistSq = hover.distance * hover.distance
 
     for (const p of this.particles) {
       let radius = p.radius
       let opacity = p.opacity
 
-      if (bubble) {
-        const dx = p.x - this.mouse.x
-        const dy = p.y - this.mouse.y
+      if (bubble && mouse) {
+        const dx = p.x - mouse.x
+        const dy = p.y - mouse.y
         const dSq = dx * dx + dy * dy
         if (dSq < bDistSq) {
           const t = 1 - Math.sqrt(dSq) / hover.distance

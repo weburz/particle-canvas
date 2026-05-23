@@ -6,6 +6,12 @@ import {
 } from '@nuxt/kit'
 import type { ParticleConfig } from './runtime/engine'
 
+declare module '@nuxt/schema' {
+  interface PublicRuntimeConfig {
+    particleCanvas: { defaults: ParticleConfig }
+  }
+}
+
 export interface ModuleOptions {
   /**
    * Default ParticleConfig applied when a <ParticleCanvas> is rendered
