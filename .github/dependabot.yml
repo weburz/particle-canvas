@@ -21,6 +21,12 @@ updates:
       interval: "monthly"
       time: "06:00"
       timezone: "Europe/Sofia"
+    # Hold updates until versions have aged, so freshly published packages
+    # (and their transitive deps) clear the 24h minimumReleaseAge supply-chain
+    # policy enforced in CI before Dependabot proposes them.
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
     commit-message:
       prefix: "chore(deps): "
     labels:
