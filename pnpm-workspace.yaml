@@ -1,5 +1,10 @@
 packages:
   - playground
+overrides:
+  # Force a single Vue version across the graph. @nuxt/test-utils pins vue@3.5.34
+  # while nuxt/playground use 3.5.38; the duplicate produces two distinct `Ref`
+  # types and breaks `vue-tsc` on ParticleCanvas.vue. Keep aligned with nuxt's vue.
+  vue: 3.5.38
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
