@@ -9,7 +9,7 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRuntimeConfig } from '#imports'
 import type { ParticleConfig } from '../engine'
-import { mergeConfig } from '../engine'
+import { resolveConfig } from '../engine'
 import { useActiveParticleSystem } from '../composables/useActiveParticleSystem'
 
 const props = defineProps<{
@@ -17,7 +17,7 @@ const props = defineProps<{
 }>()
 
 const runtimeDefaults = useRuntimeConfig().public.particleCanvas?.defaults ?? {}
-const merged = mergeConfig(runtimeDefaults, props.config ?? {})
+const merged = resolveConfig(props.config ?? {}, runtimeDefaults)
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const { mount, unmount } = useActiveParticleSystem(canvasRef, merged)

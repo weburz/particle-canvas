@@ -1,7 +1,10 @@
-import type { Particle, ResolvedConfig } from './types'
-import { hexToRgb, rand } from './utils'
+import type { Direction, Particle, ResolvedConfig, Vector } from './types'
+import { hexToRgb, pick, rand } from './utils'
 
-export const DIRECTIONS: Record<string, { x: number, y: number }> = {
+const FORCE_DECAY = 0.92
+const JITTER = 0.5
+
+export const DIRECTIONS: Record<Direction, Vector> = {
   none: { x: 0, y: 0 },
   top: { x: 0, y: -1 },
   bottom: { x: 0, y: 1 },
@@ -17,19 +20,19 @@ export const makeParticle = (
   y?: number,
 ): Particle => {
   const colors = Array.isArray(cfg.color) ? cfg.color : [cfg.color]
-  const dir = DIRECTIONS[cfg.direction] ?? DIRECTIONS.none!
+  const dir = DIRECTIONS[cfg.direction] ?? DIRECTIONS.none
   const spd = rand(cfg.speed.min, cfg.speed.max)
 
   return {
-    x: x ?? Math.random() * width,
-    y: y ?? Math.random() * height,
-    vx: (dir.x + (Math.random() - 0.5)) * spd,
-    vy: (dir.y + (Math.random() - 0.5)) * spd,
+    x: x ?? rand(0, width),
+    y: y ?? rand(0, height),
+    vx: (dir.x + rand(-JITTER, JITTER)) * spd,
+    vy: (dir.y + rand(-JITTER, JITTER)) * spd,
     fx: 0,
     fy: 0,
     radius: rand(cfg.size.min, cfg.size.max),
     opacity: rand(cfg.opacity.min, cfg.opacity.max),
-    color: hexToRgb(colors[Math.floor(Math.random() * colors.length)]!),
+    color: hexToRgb(pick(colors)),
   }
 }
 
@@ -61,8 +64,8 @@ export const stepParticles = (
   height: number,
 ) => {
   for (const p of particles) {
-    p.fx *= 0.92
-    p.fy *= 0.92
+    p.fx *= FORCE_DECAY
+    p.fy *= FORCE_DECAY
 
     p.x += p.vx + p.fx
     p.y += p.vy + p.fy

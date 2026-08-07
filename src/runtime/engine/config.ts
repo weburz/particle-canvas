@@ -1,4 +1,5 @@
 import type { ParticleConfig, ResolvedConfig } from './types'
+import { mergeConfig } from './utils'
 
 export const DEFAULT_CONFIG: ResolvedConfig = {
   count: 100,
@@ -33,21 +34,8 @@ export const DEFAULT_CONFIG: ResolvedConfig = {
   },
 }
 
-export const resolveConfig = (user: ParticleConfig = {}): ResolvedConfig => ({
-  count: user.count ?? DEFAULT_CONFIG.count,
-  color: user.color ?? DEFAULT_CONFIG.color,
-  size: user.size ?? DEFAULT_CONFIG.size,
-  opacity: user.opacity ?? DEFAULT_CONFIG.opacity,
-  speed: user.speed ?? DEFAULT_CONFIG.speed,
-  direction: user.direction ?? DEFAULT_CONFIG.direction,
-  outMode: user.outMode ?? DEFAULT_CONFIG.outMode,
-
-  linked: { ...DEFAULT_CONFIG.linked, ...user.linked },
-
-  interaction: {
-    hover: { ...DEFAULT_CONFIG.interaction.hover, ...user.interaction?.hover },
-    click: { ...DEFAULT_CONFIG.interaction.click, ...user.interaction?.click },
-  },
-
-  density: { ...DEFAULT_CONFIG.density, ...user.density },
-})
+export const resolveConfig = (
+  user: ParticleConfig = {},
+  base: ParticleConfig = DEFAULT_CONFIG,
+): ResolvedConfig =>
+  mergeConfig(mergeConfig(DEFAULT_CONFIG, base), user) as ResolvedConfig

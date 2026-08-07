@@ -1,5 +1,12 @@
 export type Range = { min: number, max: number }
 
+export type Direction = 'none' | 'top' | 'bottom' | 'left' | 'right'
+export type OutMode = 'out' | 'bounce'
+export type HoverMode = 'grab' | 'repulse' | 'bubble'
+export type ClickMode = 'push' | 'repulse'
+
+export type Vector = { x: number, y: number }
+
 export type ParticleConfig = {
   count?: number
   color?: string | string[]
@@ -7,8 +14,8 @@ export type ParticleConfig = {
   opacity?: Range
   speed?: Range
 
-  direction?: 'none' | 'top' | 'bottom' | 'left' | 'right'
-  outMode?: 'out' | 'bounce'
+  direction?: Direction
+  outMode?: OutMode
 
   linked?: {
     enable?: boolean
@@ -21,13 +28,13 @@ export type ParticleConfig = {
   interaction?: {
     hover?: {
       enable?: boolean
-      mode?: 'grab' | 'repulse' | 'bubble'
+      mode?: HoverMode
       distance?: number
     }
 
     click?: {
       enable?: boolean
-      mode?: 'push' | 'repulse'
+      mode?: ClickMode
       count?: number
     }
   }
@@ -44,8 +51,8 @@ export type ResolvedConfig = {
   size: Range
   opacity: Range
   speed: Range
-  direction: NonNullable<ParticleConfig['direction']>
-  outMode: NonNullable<ParticleConfig['outMode']>
+  direction: Direction
+  outMode: OutMode
   linked: {
     enable: boolean
     distance: number
@@ -56,12 +63,12 @@ export type ResolvedConfig = {
   interaction: {
     hover: {
       enable: boolean
-      mode: NonNullable<NonNullable<ParticleConfig['interaction']>['hover']>['mode']
+      mode: HoverMode
       distance: number
     }
     click: {
       enable: boolean
-      mode: NonNullable<NonNullable<ParticleConfig['interaction']>['click']>['mode']
+      mode: ClickMode
       count: number
     }
   }
