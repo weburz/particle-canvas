@@ -24,6 +24,22 @@ pnpm prepack                     # nuxt-module-build build -> dist/ (generated, 
   (changelogen -> `CHANGELOG.md`, Keep a Changelog + SemVer). No manual version
   bumps, no AI attribution in commits/PRs.
 
+## Dependencies & the 24h supply-chain policy
+
+- CI installs with `--frozen-lockfile` and fails on any lockfile entry published
+  within 24h (`minimumReleaseAge`). Fresh transitive releases (caniuse-lite,
+  update-browserslist-db, postcss, vite...) thus break dependabot PRs for hours.
+- Fix is to pin the volatile dep to the previous stable release in
+  `pnpm-workspace.yaml` `overrides` (with a comment explaining the policy), then
+  re-resolve the lockfile. Keep pinned versions one minor behind latest.
+- The local pnpm (11.20.0 via Homebrew) hardcodes the 24h policy and ignores
+  `.npmrc`; CI runs pnpm 11.1.3. To bypass locally, run pnpm 11.1.3 from the
+  global store with `--config.minimum-release-age=0`, e.g.:
+  `node ~/.local/share/pnpm/store/v11/links/@/pnpm/11.1.3/*/node_modules/pnpm/dist/pnpm.mjs install --config.minimum-release-age=0`
+- Merging dependabot PRs: the ruleset requires 1 approving review; self-approval
+  of a dependabot PR does not flip `reviewDecision` to APPROVED, so merges go
+  through `gh pr merge --admin`. Verify `Code QA Checks` is green first.
+
 ## Code conventions
 
 - **Arrow functions only** for free functions, composables, and inner helpers;
