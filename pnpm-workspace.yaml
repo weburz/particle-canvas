@@ -13,11 +13,23 @@ overrides:
   update-browserslist-db: 1.2.3
   # postcss also churns rapidly and trips the same policy; keep the stable
   # minor that main already pins (8.5.14/8.5.15), used by the build tooling.
-  postcss: 8.5.15
+  #
+  # 8.5.15 is vulnerable (GHSA-fxqj-rqcc-2cmp / GHSA-r28c-9q8g-f849, patched
+  # in 8.5.18 and 8.5.23), so the pin now holds the highest aged stable
+  # instead. 8.5.25 (2026-07-29) is older than the 24h feed and satisfies the
+  # patched versions; 8.5.26 was published today UTC.
+  postcss: 8.5.25
   # vite publishes several times a week; hold the previous 8.2 minor so the
   # 24h supply-chain policy does not fail CI on a fresh release. Same minor,
   # so the range being bumped is still satisfied.
   vite: 8.2.0
+  # tar below 7.5.18 ships a dangling-symlink advisory (GHSA-w8wr-v893-vjvp);
+  # hold the latest aged release (7.5.22, 2026-07-24) for the build tooling.
+  tar: 7.5.22
+  # brace-expansion 5.0.6 is vulnerable (GHSA-3jxr-9vmj-r5cp, patched 5.0.7+).
+  # Only the ^5 consumers need the bump; 2.1.4 (used by older tooling) is
+  # outside the advisory range and must keep its API, hence the scoped pin.
+  brace-expansion@^5: 5.0.9
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
