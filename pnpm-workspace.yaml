@@ -11,6 +11,9 @@ overrides:
   # These are dev-only transitive deps, so staying one minor behind is safe.
   caniuse-lite: 1.0.30001799
   update-browserslist-db: 1.2.3
+  # postcss also churns rapidly and trips the same policy; keep the stable
+  # minor that main already pins (8.5.14/8.5.15), used by the build tooling.
+  postcss: 8.5.15
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
