@@ -10,10 +10,14 @@ export class CanvasRenderer {
     this.ctx.clearRect(0, 0, width, height)
   }
 
+  private rgba(alpha: number): string {
+    const { r, g, b } = this.linkColor
+    return `rgba(${r},${g},${b},${alpha})`
+  }
+
   drawLinks(particles: Particle[], linked: ResolvedConfig['linked']): void {
     const { distance, width, opacity } = linked
     const dSqMax = distance * distance
-    const { r, g, b } = this.linkColor
 
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
@@ -25,7 +29,7 @@ export class CanvasRenderer {
 
         if (dSq < dSqMax) {
           const a = opacity * (1 - Math.sqrt(dSq) / distance)
-          this.ctx.strokeStyle = `rgba(${r},${g},${b},${a})`
+          this.ctx.strokeStyle = this.rgba(a)
           this.ctx.lineWidth = width
           this.ctx.beginPath()
           this.ctx.moveTo(p1.x, p1.y)
@@ -43,7 +47,6 @@ export class CanvasRenderer {
   ): void {
     if (!hover.enable || hover.mode !== 'grab' || !mouse) return
 
-    const { r, g, b } = this.linkColor
     const grabDistSq = hover.distance * hover.distance
 
     for (const p of particles) {
@@ -53,7 +56,7 @@ export class CanvasRenderer {
 
       if (dSq < grabDistSq) {
         const a = 1 - Math.sqrt(dSq) / hover.distance
-        this.ctx.strokeStyle = `rgba(${r},${g},${b},${a})`
+        this.ctx.strokeStyle = this.rgba(a)
         this.ctx.lineWidth = 1.5
         this.ctx.beginPath()
         this.ctx.moveTo(p.x, p.y)

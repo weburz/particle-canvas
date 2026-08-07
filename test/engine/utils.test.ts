@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   hexToRgb,
   mergeConfig,
+  pick,
   rand,
 } from '../../src/runtime/engine/utils'
 
@@ -35,6 +36,18 @@ describe('rand', () => {
 
   it('returns min when min equals max', () => {
     expect(rand(7, 7)).toBe(7)
+  })
+})
+
+describe('pick', () => {
+  it('always returns a member of the array', () => {
+    for (let i = 0; i < 1000; i++) {
+      expect(['a', 'b', 'c']).toContain(pick(['a', 'b', 'c']))
+    }
+  })
+
+  it('returns the only element of a singleton array', () => {
+    expect(pick(['only'])).toBe('only')
   })
 })
 

@@ -10,6 +10,21 @@ import type { Particle } from '../../src/runtime/engine/types'
 
 const cfg = resolveConfig({ count: 10, color: '#ff0000' })
 
+const makeParticleFixture = (
+  overrides: Partial<Particle> = {},
+): Particle => ({
+  x: 100,
+  y: 100,
+  vx: 0,
+  vy: 0,
+  fx: 0,
+  fy: 0,
+  radius: 1,
+  opacity: 1,
+  color: { r: 255, g: 255, b: 255 },
+  ...overrides,
+})
+
 describe('DIRECTIONS', () => {
   it('exposes all four cardinal directions plus none', () => {
     expect(Object.keys(DIRECTIONS).sort()).toEqual([
@@ -77,10 +92,7 @@ describe('makeParticle', () => {
 describe('stepParticles', () => {
   it('wraps particles around the bounds in out mode', () => {
     const out = resolveConfig({ outMode: 'out' })
-    const p: Particle = {
-      x: -2, y: 602, vx: 0, vy: 0, fx: 0, fy: 0,
-      radius: 1, opacity: 1, color: { r: 255, g: 255, b: 255 },
-    }
+    const p = makeParticleFixture({ x: -2, y: 602 })
     stepParticles([p], out, 800, 600)
     expect(p.x).toBe(801)
     expect(p.y).toBe(-1)
@@ -88,10 +100,7 @@ describe('stepParticles', () => {
 
   it('bounces off every edge in bounce mode', () => {
     const bounce = resolveConfig({ outMode: 'bounce' })
-    const p: Particle = {
-      x: -5, y: 605, vx: -2, vy: 2, fx: 0, fy: 0,
-      radius: 2, opacity: 1, color: { r: 255, g: 255, b: 255 },
-    }
+    const p = makeParticleFixture({ x: -5, y: 605, vx: -2, vy: 2, radius: 2 })
     stepParticles([p], bounce, 800, 600)
     expect(p.x).toBe(2)
     expect(p.vx).toBe(2)
@@ -101,10 +110,7 @@ describe('stepParticles', () => {
 
   it('decays applied forces each step', () => {
     const out = resolveConfig({ outMode: 'out' })
-    const p: Particle = {
-      x: 100, y: 100, vx: 0, vy: 0, fx: 10, fy: 10,
-      radius: 1, opacity: 1, color: { r: 255, g: 255, b: 255 },
-    }
+    const p = makeParticleFixture({ fx: 10, fy: 10 })
     stepParticles([p], out, 800, 600)
     expect(p.fx).toBeCloseTo(9.2)
     expect(p.fy).toBeCloseTo(9.2)
@@ -112,10 +118,7 @@ describe('stepParticles', () => {
 
   it('is deterministic for fixed velocity with no force', () => {
     const out = resolveConfig({ outMode: 'out' })
-    const p: Particle = {
-      x: 100, y: 100, vx: 5, vy: -3, fx: 0, fy: 0,
-      radius: 1, opacity: 1, color: { r: 255, g: 255, b: 255 },
-    }
+    const p = makeParticleFixture({ vx: 5, vy: -3 })
     stepParticles([p], out, 800, 600)
     expect(p.x).toBe(105)
     expect(p.y).toBe(97)
@@ -124,23 +127,13 @@ describe('stepParticles', () => {
 
 describe('applyRepulse', () => {
   it('pushes particles away from the center', () => {
-    const particles = [
-      {
-        x: 10, y: 0, vx: 0, vy: 0, fx: 0, fy: 0,
-        radius: 1, opacity: 1, color: { r: 255, g: 255, b: 255 },
-      },
-    ]
+    const particles = [makeParticleFixture({ x: 10, y: 0 })]
     applyRepulse(particles, 0, 0, 100, 1)
     expect(particles[0]!.fx).toBeGreaterThan(0)
   })
 
   it('leaves particles outside the radius untouched', () => {
-    const particles = [
-      {
-        x: 200, y: 200, vx: 0, vy: 0, fx: 0, fy: 0,
-        radius: 1, opacity: 1, color: { r: 255, g: 255, b: 255 },
-      },
-    ]
+    const particles = [makeParticleFixture({ x: 200, y: 200 })]
     applyRepulse(particles, 0, 0, 100, 1)
     expect(particles[0]!.fx).toBe(0)
     expect(particles[0]!.fy).toBe(0)

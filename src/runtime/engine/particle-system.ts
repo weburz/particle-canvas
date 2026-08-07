@@ -4,6 +4,11 @@ import { hexToRgb } from './utils'
 import { CanvasRenderer } from './renderer'
 import { applyRepulse, makeParticle, stepParticles } from './simulation'
 
+const HOVER_REPULSE_STRENGTH = 2.5
+const CLICK_REPULSE_DISTANCE = 160
+const CLICK_REPULSE_STRENGTH = 9
+const PUSH_CAP_MULTIPLIER = 3
+
 export class ParticleSystem {
   private readonly ctx: CanvasRenderingContext2D
   private readonly cfg: ResolvedConfig
@@ -30,7 +35,7 @@ export class ParticleSystem {
 
   start(): void {
     this.onResize()
-    this.spawnAll()
+    this.adjustCount()
     this.attachListeners()
     this.loop()
   }
@@ -89,14 +94,6 @@ export class ParticleSystem {
     }
   }
 
-  private spawnAll() {
-    this.particles = []
-    const target = this.targetCount()
-    for (let i = 0; i < target; i++) {
-      this.particles.push(makeParticle(this.cfg, this.w, this.h))
-    }
-  }
-
   private onMouseMove = (e: MouseEvent): void => {
     const r = this.canvas.getBoundingClientRect()
     const x = e.clientX - r.left
@@ -121,14 +118,14 @@ export class ParticleSystem {
     const cy = e.clientY - r.top
 
     if (click.mode === 'push') {
-      const cap = this.targetCount() * 3
+      const cap = this.targetCount() * PUSH_CAP_MULTIPLIER
       for (let i = 0; i < click.count; i++) {
         if (this.particles.length >= cap) break
         this.particles.push(makeParticle(this.cfg, this.w, this.h, cx, cy))
       }
     }
     else {
-      applyRepulse(this.particles, cx, cy, 160, 9)
+      applyRepulse(this.particles, cx, cy, CLICK_REPULSE_DISTANCE, CLICK_REPULSE_STRENGTH)
     }
   }
 
@@ -141,7 +138,7 @@ export class ParticleSystem {
         this.mouse.x,
         this.mouse.y,
         hover.distance,
-        2.5,
+        HOVER_REPULSE_STRENGTH,
       )
     }
 
