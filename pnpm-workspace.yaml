@@ -30,6 +30,9 @@ overrides:
   # Only the ^5 consumers need the bump; 2.1.4 (used by older tooling) is
   # outside the advisory range and must keep its API, hence the scoped pin.
   brace-expansion@^5: 5.0.9
+  # svgo < 4.0.2 is vulnerable (GHSA-2p49-hgcm-8545); cssnano's postcss-svgo
+  # pulls a 4.0.1 copy, so pin the patched release for the whole tree.
+  svgo: 4.0.2
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
