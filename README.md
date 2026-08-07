@@ -110,7 +110,7 @@ so you can override just the field you care about. Range pairs (`size`,
 ## API
 
 - `<ParticleCanvas :config="..." />` — auto-imported component
-- `useParticleSystem(canvasRef, config)` — auto-imported composable, returns `{ mount, unmount }`
+- `useActiveParticleSystem(canvasRef, config)` — auto-imported composable, returns `{ mount, unmount }`
 
 Both are typed via the exported `ParticleConfig`, `Particle`, and `RGB` types.
 

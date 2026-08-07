@@ -1,13 +1,11 @@
+export type Range = { min: number, max: number }
+
 export type ParticleConfig = {
   count?: number
   color?: string | string[]
-  size?: { min: number, max: number }
-  opacity?: { min: number, max: number }
-
-  speed?: {
-    min: number
-    max: number
-  }
+  size?: Range
+  opacity?: Range
+  speed?: Range
 
   direction?: 'none' | 'top' | 'bottom' | 'left' | 'right'
   outMode?: 'out' | 'bounce'
@@ -38,6 +36,36 @@ export type ParticleConfig = {
     enable?: boolean
     area?: number
   }
+}
+
+export type ResolvedConfig = {
+  count: number
+  color: string | string[]
+  size: Range
+  opacity: Range
+  speed: Range
+  direction: NonNullable<ParticleConfig['direction']>
+  outMode: NonNullable<ParticleConfig['outMode']>
+  linked: {
+    enable: boolean
+    distance: number
+    color: string
+    width: number
+    opacity: number
+  }
+  interaction: {
+    hover: {
+      enable: boolean
+      mode: NonNullable<NonNullable<ParticleConfig['interaction']>['hover']>['mode']
+      distance: number
+    }
+    click: {
+      enable: boolean
+      mode: NonNullable<NonNullable<ParticleConfig['interaction']>['click']>['mode']
+      count: number
+    }
+  }
+  density: { enable: boolean, area: number }
 }
 
 export type RGB = { r: number, g: number, b: number }

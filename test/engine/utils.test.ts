@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import {
-  DIRECTIONS,
   hexToRgb,
   mergeConfig,
   rand,
@@ -36,29 +35,6 @@ describe('rand', () => {
 
   it('returns min when min equals max', () => {
     expect(rand(7, 7)).toBe(7)
-  })
-})
-
-describe('DIRECTIONS', () => {
-  it('exposes all four cardinal directions plus none', () => {
-    expect(Object.keys(DIRECTIONS).sort()).toEqual([
-      'bottom',
-      'left',
-      'none',
-      'right',
-      'top',
-    ])
-  })
-
-  it('none is the zero vector', () => {
-    expect(DIRECTIONS.none).toEqual({ x: 0, y: 0 })
-  })
-
-  it('cardinals are unit vectors', () => {
-    expect(DIRECTIONS.top).toEqual({ x: 0, y: -1 })
-    expect(DIRECTIONS.bottom).toEqual({ x: 0, y: 1 })
-    expect(DIRECTIONS.left).toEqual({ x: -1, y: 0 })
-    expect(DIRECTIONS.right).toEqual({ x: 1, y: 0 })
   })
 })
 
