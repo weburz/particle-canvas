@@ -14,6 +14,10 @@ overrides:
   # postcss also churns rapidly and trips the same policy; keep the stable
   # minor that main already pins (8.5.14/8.5.15), used by the build tooling.
   postcss: 8.5.15
+  # vite publishes several times a week; hold the previous 8.2 minor so the
+  # 24h supply-chain policy does not fail CI on a fresh release. Same minor,
+  # so the range being bumped is still satisfied.
+  vite: 8.2.0
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
