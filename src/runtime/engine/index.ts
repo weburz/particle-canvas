@@ -1,3 +1,4 @@
 export { ParticleSystem } from './particle-system'
 export { mergeConfig } from './utils'
-export type { ParticleConfig, Particle, RGB } from './types'
+export { DEFAULT_CONFIG, resolveConfig } from './config'
+export type { ParticleConfig, ResolvedConfig, Particle, RGB, Range } from './types'

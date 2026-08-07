@@ -2,7 +2,7 @@ import type { Ref } from 'vue'
 import { ParticleSystem } from '../engine'
 import type { ParticleConfig } from '../engine'
 
-export const useParticleSystem = (
+export const useActiveParticleSystem = (
   canvasRef: Ref<HTMLCanvasElement | null>,
   config: ParticleConfig = {},
 ) => {
