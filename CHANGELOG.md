@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## [0.2.0] - 2026-08-07
 
 ### Changed
 
-- Renamed the auto-imported composable `useParticleSystem` to
-  `useActiveParticleSystem` (`useAdjectiveX` naming convention).
+- **Breaking:** Renamed the auto-imported composable `useParticleSystem` to
+  `useActiveParticleSystem` (`useAdjectiveX` naming convention). Migrate
+  imports from the old name.
 - Split the engine into focused, unit-testable modules: `config`
   (pure default resolution), `simulation` (pure physics), `renderer`
   (canvas drawing), and `particle-system` (lifecycle facade).
