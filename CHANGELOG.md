@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.2] - 2026-11-02
+
+### Changed
+
+- Maintenance release with no runtime or public API changes: dev and CI
+  tooling refreshed (`vitest` 5, `happy-dom` 21, `@nuxt/test-utils` 4.2,
+  `eslint` 10.11, Nuxt 4.6 for the playground, `actions/setup-node` 7.1,
+  `pnpm/action-setup` 6.1).
+
 ## [0.2.1] - 2026-08-07
 
 ### Changed
