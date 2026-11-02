@@ -1,6 +1,8 @@
 name: "Code QA Checks"
 
 on:
+  # The merge queue tests each queued PR on top of main before merging it.
+  merge_group:
   push:
     branches:
       - main
