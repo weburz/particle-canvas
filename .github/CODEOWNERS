@@ -2,4 +2,4 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#example-of-a-codeowners-file
 
 # Global owners of all the files in the repository
-*    @sagar-kap
+*    @sagar-kap @jarmos-san
